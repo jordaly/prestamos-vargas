@@ -1,0 +1,61 @@
+{
+  "last_user_logged": {
+    "id": -1,
+    "username": "admin",
+    "email": "admin@admin.com"
+  },
+  "login_history": [
+    {
+      "id": -1,
+      "username": "admin",
+      "date": 1707507075.556342
+    },
+    {
+      "id": -1,
+      "username": "admin",
+      "date": 1707507176.201034
+    },
+    {
+      "id": -1,
+      "username": "admin",
+      "date": 1707507238.837429
+    },
+    {
+      "id": -1,
+      "username": "admin",
+      "date": 1707508076.580659
+    },
+    {
+      "id": -1,
+      "username": "admin",
+      "date": 1707508088.612135
+    },
+    {
+      "id": -1,
+      "username": "admin",
+      "date": 1707508115.035459
+    },
+    {
+      "id": -1,
+      "username": "admin",
+      "date": 1707508228.789582
+    },
+    {
+      "id": -1,
+      "username": "admin",
+      "date": 1707512556.308171
+    },
+    {
+      "id": -1,
+      "username": "admin",
+      "date": 1707512604.201108
+    },
+    {
+      "id": -1,
+      "username": "admin",
+      "date": 1707512622.059214
+    }
+  ],
+  "created_at": 1707424728.619241,
+  "updated_at": 1707512622.059214
+}
