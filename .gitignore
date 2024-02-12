@@ -1,3 +1,11 @@
 .vscode
 venv
 Session.vim
+__pycache__
+**/__pycache__
+**.pyc
+.vscode
+.env
+.mypy_cache
+.ropeproject
+# launch.json
