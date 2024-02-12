@@ -1,7 +1,6 @@
 import json
 import tkinter as tk
 import ttkbootstrap as tkb
-from tkinter import ttk
 from pathlib import Path
 from datetime import datetime
 from enum import Enum
@@ -20,6 +19,8 @@ class event_types(Enum):
 
 
 class Event:
+    from app import App
+
     def __init__(self, trigger: str, code: event_types, data: dict[any] = None):
         self.trigger = trigger
         self.code = code.value
@@ -28,7 +29,7 @@ class Event:
     def __str__(self):
         return f"event: ({self.name}) from ({self.trigger})"
 
-    def handle(self, app: tkb.Window):
+    def handle(self, app: App):
         match self.code:
             case event_types.LOGIN.value:
                 print("handling event")
@@ -59,6 +60,7 @@ class Event:
 
             case event_types.ADD_USER.value:
                 print("add user")
+                # self.change_current_frame(app=)
 
             case event_types.ADD_CLIENT.value:
                 print("add client")
@@ -75,8 +77,17 @@ class Event:
                 print("no event")
 
     def change_current_frame(
-        self, app: tkb.Window, new_frame: tkb.Frame | tkb.LabelFrame, **kwargs
+        self,
+        app: tkb.Window,
+        new_frame: tkb.Frame | tkb.LabelFrame,
+        menu=False,
+        **kwargs,
     ) -> None:
+        if menu:
+            app.menu.content.forget()
+            app.menu.content = app.menu.user_panel_view
+            app.menu.content.pack(**kwargs)
+            return
         app.current_frame.forget()
         app.current_frame = new_frame
         app.current_frame.pack(**kwargs)

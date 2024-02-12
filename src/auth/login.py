@@ -1,9 +1,6 @@
-import inspect
-import tkinter as tk
 import ttkbootstrap as tkb
-from ttkbootstrap.constants import *
+from ttkbootstrap import constants
 from ttkbootstrap.validation import validator, add_validation, ValidationEvent
-from tkinter import ttk
 from tkinter import messagebox
 from database.db import User, Session
 from events import event_types, Event
