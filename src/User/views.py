@@ -1,10 +1,11 @@
 import ttkbootstrap as tkb
 from ttkbootstrap import constants
 
+style = tkb.Style.get_instance()
+style.configure("topbar_content_bg_color.TFrame", background="#CCC")
 
-class UsersPanel(tkb.Frame):
-    topbar_bg_color = "#CCC"
 
+class UserPanel(tkb.Frame):
     def __init__(self, parent):
         super().__init__(parent)
         self.parent = parent
@@ -14,10 +15,11 @@ class UsersPanel(tkb.Frame):
 
     def configure_grid(self):
         self.columnconfigure(index=0, weight=1)
-        self.rowconfigure(index=0, weight=8)
+        self.rowconfigure(index=0, weight=1)
+        self.rowconfigure(index=1, weight=8)
 
     def load_topbar(self):
-        self.topbar_frame = tkb.Frame(self, background=self.topbar_bg_color)
+        self.topbar_frame = tkb.Frame(self, style="topbar_content_bg_color.TFrame")
         self.topbar_frame.grid(column=0, row=0, sticky="nsew")
 
         self.title_lb = tkb.Label(
@@ -29,8 +31,6 @@ class UsersPanel(tkb.Frame):
 
 
 class UserForm(tkb.Frame):
-    topbar_bg_color = "#CCC"
-
     def __init__(self, parent):
         super().__init__(parent)
         self.parent = parent
@@ -43,7 +43,7 @@ class UserForm(tkb.Frame):
         self.rowconfigure(index=0, weight=8)
 
     def load_topbar(self):
-        self.topbar_frame = tkb.Frame(self, background=self.topbar_bg_color)
+        self.topbar_frame = tkb.Frame(self, style="topbar_content_bg_color.TFrame")
         self.topbar_frame.grid(column=0, row=0, sticky="nsew")
 
         self.title_lb = tkb.Label(

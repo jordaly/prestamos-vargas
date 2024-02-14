@@ -3,10 +3,11 @@ from ttkbootstrap import constants
 from tkinter import messagebox
 from events import Event, event_types
 from settings import ASSETS_PATH
-from User import views as user_views
 
 
 class Menu(tkb.Frame):
+    content_views = dict()
+
     def __init__(self, parent, listen_event: callable):
         super().__init__(parent)
         self.parent = parent
@@ -18,7 +19,7 @@ class Menu(tkb.Frame):
         self.load_topbar()
         self.load_sidebar()
         self.load_content()
-        self.load_navigation()
+        # self.load_navigation()
 
     def configure_grid(self):
         self.columnconfigure(index=0, weight=1)
@@ -36,8 +37,10 @@ class Menu(tkb.Frame):
         )
         self.logo_imgtk = tkb.ImageTk.PhotoImage(self.logo_img)
 
-        self.logo_lb = tkb.Label(self.topbar_frame, image=self.logo_imgtk)
-        self.logo_lb.pack(side="left", padx=10)
+        self.logo_btn = tkb.Button(
+            self.topbar_frame, command=self.load_welcome, image=self.logo_imgtk
+        )
+        self.logo_btn.pack(side="left", padx=10)
 
         self.name_lb_var = tkb.StringVar(value="User Name")
         self.name_lb = tkb.Label(
@@ -54,7 +57,7 @@ class Menu(tkb.Frame):
         self.add_user_button = tkb.Button(
             self.sidevar,
             text="Add User",
-            command=self.add_user,
+            command=self.load_user_panel,
             bootstyle=constants.DARK,
         )
 
@@ -72,18 +75,33 @@ class Menu(tkb.Frame):
         self.label.pack()
 
     def load_navigation(self):
-        self.user_panel_view = user_views.UsersPanel(self.content)
-        self.user_form_view = user_views.UserForm(self.content)
+        from User import views as user_views
+
+        self.content_views = {
+            "user": {
+                "panel": user_views.UserPanel(self.content),
+                "form": user_views.UserForm(self.content),
+            }
+        }
+
+    def load_welcome(self):
+        self.clean_content()
+        tkb.Label(self.content, text="Welcome to the Menu").pack()
+
+    def clean_content(self):
+        for view in self.content.winfo_children():
+            view.forget()
 
     # Navigation methods
-    def add_user(self):
-        self.listen_event(
-            Event(trigger=self._get_name(), code=event_types.ADD_USER, data={})
-        )
+    def load_user_panel(self):
+        self.clean_content()
+
+        if self.content_views is not None:
+            self.load_navigation()
+
+        self.content_views["user"]["panel"].pack(expand=True, fill="both")
 
     def resize_content(self, event):
-        print(event)
-
         # <Configure event x=0 y=0 width=500 height=300> this are the default values of the event
 
         width = 500  # column

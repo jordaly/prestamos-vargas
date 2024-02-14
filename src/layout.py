@@ -14,7 +14,7 @@ class Event:
         return f"event: ({self.name}) from ({self.trigger})"
 
 
-class App(tk.Tk):
+class TestApp(tk.Tk):
     def __init__(self):
         super().__init__()
         self.title("layout example")
@@ -78,4 +78,4 @@ class SecondWindow(tk.Toplevel):
 
 
 if __name__ == "__main__":
-    App().mainloop()
+    TestApp().mainloop()

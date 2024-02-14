@@ -19,8 +19,6 @@ class event_types(Enum):
 
 
 class Event:
-    from app import App
-
     def __init__(self, trigger: str, code: event_types, data: dict[any] = None):
         self.trigger = trigger
         self.code = code.value
@@ -29,7 +27,7 @@ class Event:
     def __str__(self):
         return f"event: ({self.name}) from ({self.trigger})"
 
-    def handle(self, app: App):
+    def handle(self, app: tkb.Window):
         match self.code:
             case event_types.LOGIN.value:
                 print("handling event")
@@ -84,8 +82,9 @@ class Event:
         **kwargs,
     ) -> None:
         if menu:
-            app.menu.content.forget()
-            app.menu.content = app.menu.user_panel_view
+            for widget in app.menu.content.winfo_children():
+                widget.forget()
+            app.menu.content = new_frame
             app.menu.content.pack(**kwargs)
             return
         app.current_frame.forget()
