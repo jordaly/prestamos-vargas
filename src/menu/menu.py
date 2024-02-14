@@ -37,7 +37,7 @@ class Menu(tkb.Frame):
         )
         self.logo_imgtk = tkb.ImageTk.PhotoImage(self.logo_img)
 
-        self.logo_btn = tkb.Button(
+        self.logo_btn = tkb.Canvas(
             self.topbar_frame, command=self.load_welcome, image=self.logo_imgtk
         )
         self.logo_btn.pack(side="left", padx=10)

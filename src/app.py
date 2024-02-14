@@ -22,14 +22,6 @@ class App(tkb.Window):
     def __init__(self, title, size, icon_path):
         super().__init__(iconphoto=str(self.assets_path / icon_path))
 
-        # icon = tkb.PhotoImage(file=str(self.assets_path / icon_path))
-        # self.iconphoto(True, icon)
-
-        # print(self.assets_path / icon_path)
-        # self.style.configure(iconphoto=icon)
-
-        # self.iconphoto(True, icon)
-
         self.title(title)
         self.minsize(size[0], size[1])
 
@@ -52,7 +44,6 @@ class App(tkb.Window):
 
     def configure_styles(self):
         pass
-        # self.style.configure("topbar_bg_color.TFrame", background="#CCC")
 
     def look_last_user(self):
         result = None
