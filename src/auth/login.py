@@ -1,9 +1,12 @@
+import asyncio
 import ttkbootstrap as tkb
-from ttkbootstrap import constants
 from ttkbootstrap.validation import validator, add_validation, ValidationEvent
 from tkinter import messagebox
 from database.db import User, Session
 from events import event_types, Event
+
+
+loop = asyncio.get_event_loop()
 
 
 @validator
@@ -58,6 +61,17 @@ class Login(tkb.LabelFrame):
 
         self.submit_btn = tkb.Button(self, text="Login", command=self.login)
         self.submit_btn.pack(pady=20)
+
+        # self.test_btn = tkb.Button(
+        #     self, text="Test", command=lambda: loop.create_task(self.test())
+        # )
+        #
+        # self.test_btn.pack(pady=20)
+
+    async def test(self):
+        print("Testing")
+        await asyncio.sleep(2)
+        print("Tested")
 
     def check_fields(self) -> bool:
         """this function checks if the fields are

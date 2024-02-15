@@ -1,4 +1,3 @@
-import ttkbootstrap as tkb
 from pathlib import Path
 
 

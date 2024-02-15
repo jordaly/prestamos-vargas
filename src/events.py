@@ -1,6 +1,6 @@
 import json
-import tkinter as tk
 import ttkbootstrap as tkb
+from ttkbootstrap import constants
 from pathlib import Path
 from datetime import datetime
 from enum import Enum
@@ -33,11 +33,15 @@ class Event:
                 print("handling event")
                 app.user_auth = self.data["user"]
                 app.last_user_login = self.data["user"]["username"]
+
+                app.menu.user = app.user_auth
+                app.menu.username_lb_var.set(app.user_auth["username"])
+
                 self.change_current_frame(
                     app=app,
                     new_frame=app.menu,
                     expand=True,
-                    fill=tk.BOTH,
+                    fill=constants.BOTH,
                 )
                 self.modify_app_log(DATA_PATH, user=self.data["user"])
 
@@ -51,7 +55,7 @@ class Event:
                     app=app,
                     new_frame=app.login,
                     expand=True,
-                    fill=tk.BOTH,
+                    fill=constants.BOTH,
                     padx=20,
                     pady=20,
                 )

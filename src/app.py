@@ -1,12 +1,13 @@
 import json
 import platform
+import asyncio
+import settings
 import ttkbootstrap as tkb
 from ttkbootstrap import font as tkfont, constants
-import settings
 from auth.login import Login
 from menu.menu import Menu
-from events import Event
 from database.db import Session
+from events import Event
 
 
 class App(tkb.Window):
@@ -24,6 +25,8 @@ class App(tkb.Window):
 
         self.title(title)
         self.minsize(size[0], size[1])
+
+        self.configure_styles()
 
         self.main_frame = tkb.Frame(self)
         self.main_frame.pack(expand=True, fill=constants.BOTH)
@@ -75,3 +78,16 @@ class App(tkb.Window):
                 "current_frame": self.current_frame.__class__.__name__,
             }
         )
+
+    async def mainloop_async(self):
+        await self.show()
+
+    async def show(self):
+        interval = 0.1
+        while True:
+            self.update()
+            try:
+                self.state()
+            except Exception:
+                break
+            await asyncio.sleep(interval)

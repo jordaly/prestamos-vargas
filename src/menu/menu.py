@@ -6,6 +6,7 @@ from settings import ASSETS_PATH
 
 
 class Menu(tkb.Frame):
+    user = None
     content_views = dict()
 
     def __init__(self, parent, listen_event: callable):
@@ -13,39 +14,46 @@ class Menu(tkb.Frame):
         self.parent = parent
         self.listen_event = listen_event
 
-        self.bind("<Configure>", lambda e: self.resize_content(e))
         self.configure_grid()
 
         self.load_topbar()
         self.load_sidebar()
         self.load_content()
-        # self.load_navigation()
+
+        self.load_navigation()
 
     def configure_grid(self):
-        self.columnconfigure(index=0, weight=1)
-        self.columnconfigure(index=1, weight=3)
-        self.rowconfigure(index=0, weight=1)
-        self.rowconfigure(index=1, weight=7)
+        self.columnconfigure(index=0, weight=0, minsize=100)
+        self.columnconfigure(index=1, weight=1)
+        self.rowconfigure(index=0, weight=0, minsize=50)
+        self.rowconfigure(index=1, weight=1)
 
-    # topbar should have a photo of the system and the name of the user in the other side (photo of the left and name of the right)
     def load_topbar(self):
+        style = tkb.Style.get_instance()
+        style.configure("logoMain.TButton", padding=0, relief=constants.FLAT)
+
         self.topbar_frame = tkb.Frame(self, bootstyle=constants.DARK)
         self.topbar_frame.grid(column=0, row=0, columnspan=2, sticky="nsew")
 
         self.logo_img = tkb.Image.open(ASSETS_PATH / "img" / "logo.png").resize(
             (40, 30)
         )
+
         self.logo_imgtk = tkb.ImageTk.PhotoImage(self.logo_img)
 
-        self.logo_btn = tkb.Canvas(
-            self.topbar_frame, command=self.load_welcome, image=self.logo_imgtk
+        self.logo_btn = tkb.Button(
+            self.topbar_frame,
+            command=self.load_welcome,
+            image=self.logo_imgtk,
+            bootstyle=constants.DARK,
+            style="logoMain.DARK.TButton",
         )
         self.logo_btn.pack(side="left", padx=10)
 
-        self.name_lb_var = tkb.StringVar(value="User Name")
+        self.username_lb_var = tkb.StringVar(value="User Name")
         self.name_lb = tkb.Label(
             self.topbar_frame,
-            textvariable=self.name_lb_var,
+            textvariable=self.username_lb_var,
             bootstyle=(constants.DARK, constants.INVERSE),
         )
         self.name_lb.pack(side="right", padx=10)
@@ -78,10 +86,7 @@ class Menu(tkb.Frame):
         from User import views as user_views
 
         self.content_views = {
-            "user": {
-                "panel": user_views.UserPanel(self.content),
-                "form": user_views.UserForm(self.content),
-            }
+            "user": user_views.UserView(self.content),
         }
 
     def load_welcome(self):
@@ -96,32 +101,7 @@ class Menu(tkb.Frame):
     def load_user_panel(self):
         self.clean_content()
 
-        if self.content_views is not None:
-            self.load_navigation()
-
-        self.content_views["user"]["panel"].pack(expand=True, fill="both")
-
-    def resize_content(self, event):
-        # <Configure event x=0 y=0 width=500 height=300> this are the default values of the event
-
-        width = 500  # column
-        height = 300  # row
-
-        # and this are the default values of the frame rowconf and columnconf of the content
-        def_x = 3  # column
-        def_y = 7  # row
-
-        # here we calculate the increment of the width and height of the content
-        # this value will incremente in 1 for each interval of pixels of the event
-        pixel_in_x = 30
-        pixel_in_y = 35
-        increment_x = int((event.width - width) / pixel_in_x) + def_x
-        increment_y = int((event.height - height) / pixel_in_y) + def_y
-
-        self.columnconfigure(0, weight=1)
-        self.columnconfigure(1, weight=increment_x)
-        self.rowconfigure(0, weight=1)
-        self.rowconfigure(1, weight=increment_y)
+        self.content_views["user"].pack(expand=True, fill="both")
 
     def logout(self):
         result = messagebox.askquestion("Logout", "Are you sure you want to logout?")
