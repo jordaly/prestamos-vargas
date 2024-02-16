@@ -30,6 +30,7 @@ class User(Base):
     email: Mapped[Optional[str]] = mapped_column(VARCHAR(60), unique=True)
     first_name: Mapped[Optional[str]] = mapped_column(VARCHAR(60))
     last_name: Mapped[Optional[str]] = mapped_column(VARCHAR(60))
+    image: Mapped[Optional[str]] = mapped_column(VARCHAR(60))
 
     def __repr__(self):
         return f"<User(username={self.username}, email={self.email}, first_name={self.first_name}, last_name={self.last_name})>"
@@ -91,7 +92,10 @@ class Payment(Base):
 
 
 current_path = Path(__file__).resolve().parent.parent
-engine = create_engine(f"sqlite:///{current_path / 'database.db'}", echo=True)
+
+DB_URI = f"sqlite:///{current_path / 'database.db'}"
+
+engine = create_engine(DB_URI, echo=True)
 
 
 # print(f"The current path is: \n{current_path.parent.parent}")

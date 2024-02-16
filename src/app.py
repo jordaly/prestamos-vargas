@@ -6,7 +6,7 @@ import ttkbootstrap as tkb
 from ttkbootstrap import font as tkfont, constants
 from auth.login import Login
 from menu.menu import Menu
-from database.db import Session
+from database.models import Session
 from events import Event
 
 

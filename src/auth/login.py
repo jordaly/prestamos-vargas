@@ -2,7 +2,7 @@ import asyncio
 import ttkbootstrap as tkb
 from ttkbootstrap.validation import validator, add_validation, ValidationEvent
 from tkinter import messagebox
-from database.db import User, Session
+from database.models import User, Session
 from events import event_types, Event
 
 
