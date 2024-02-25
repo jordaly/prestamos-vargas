@@ -1,5 +1,5 @@
 from app import App
-from database.db import create_database
+from database.models import create_database
 import asyncio
 
 

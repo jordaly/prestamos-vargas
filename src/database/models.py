@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import List, Optional
+from typing import List, Optional, Type, TypeVar
 from datetime import datetime
 from sqlalchemy.orm import (
     DeclarativeBase,
@@ -7,6 +7,7 @@ from sqlalchemy.orm import (
     sessionmaker,
     Mapped,
     mapped_column,
+    Session,
 )
 
 from sqlalchemy import (
@@ -15,12 +16,84 @@ from sqlalchemy import (
     VARCHAR,
     FLOAT,
     func,
+    select,
 )
+
+CURRENT_PATH = Path(__file__).resolve().parent.parent
+
+DB_URI = f"sqlite:///{CURRENT_PATH / 'database.db'}"
+
+engine = create_engine(DB_URI, echo=True)
 
 
 class Base(DeclarativeBase):
+    session = sessionmaker(bind=engine)
     # __abstract__ = True
+
     id: Mapped[int] = mapped_column(primary_key=True, unique=True, autoincrement=True)
+
+    created_at: Mapped[datetime] = mapped_column(
+        insert_default=func.current_timestamp(), default=None
+    )
+
+    updated_at: Mapped[datetime] = mapped_column(
+        insert_default=func.current_timestamp(), default=None
+    )
+
+    instance_of_current_class = TypeVar("instance_of_current_class", bound=__name__)
+
+    def save(self) -> None:
+        """saves record"""
+        with self.session.begin() as session:
+            session.add(self)
+            session.commit()
+
+    def delete(self) -> None:
+        """deletes record"""
+        with self.session.begin() as session:
+            session.delete(self)
+            session.commit()
+
+    def update(self, **kwargs) -> None:
+        """update record"""
+        with self.session.begin() as session:
+            for key, value in kwargs.items():
+                setattr(self, key, value)
+            session.add(self)
+            session.commit()
+
+    @classmethod
+    def get(
+        cls: Type[instance_of_current_class], **kwargs
+    ) -> instance_of_current_class:
+        """get a single record, cant be
+        called from instances of the class"""
+        with cls.session() as session:
+            return session.scalars(select(cls).filter_by(**kwargs).limit(1)).one()
+
+    @classmethod
+    def all(cls: Type[instance_of_current_class]) -> List[instance_of_current_class]:
+        """get all instances, cant be
+        called from instances of the class"""
+        with cls.session() as session:
+            return session.scalars(select(cls)).all()
+
+    @classmethod
+    def filter(
+        cls: Type[instance_of_current_class], **kwargs
+    ) -> List[instance_of_current_class]:
+        """get all matching instances, cant
+        be called from instances of the class"""
+        with cls.session() as session:
+            if "limit" in kwargs:
+                limit = int(kwargs.pop("limit"))
+                result = session.scalars(
+                    select(cls).filter_by(**kwargs).limit(limit)
+                ).all()
+                return result
+
+            result = session.scalars(select(cls).filter_by(**kwargs).limit(1))
+            return result
 
 
 class User(Base):
@@ -53,12 +126,6 @@ class Loan(Base):
     cliend_id: Mapped[int] = mapped_column(ForeignKey("clients.id"))
 
     amount: Mapped[float] = mapped_column(nullable=False)
-    created_at: Mapped[datetime] = mapped_column(
-        insert_default=func.current_timestamp(), default=None
-    )
-    updated_at: Mapped[datetime] = mapped_column(
-        insert_default=func.current_timestamp(), default=None
-    )
 
     client: Mapped["Client"] = relationship(back_populates="loans")
     payments: Mapped[List["Payment"]] = relationship(back_populates="loan")
@@ -75,14 +142,6 @@ class Payment(Base):
 
     amount: Mapped[float] = mapped_column(FLOAT, nullable=False)
 
-    created_at: Mapped[datetime] = mapped_column(
-        nullable=False, insert_default=func.current_timestamp(), default=None
-    )
-
-    updated_at: Mapped[datetime] = mapped_column(
-        nullable=False, insert_default=func.current_timestamp(), default=None
-    )
-
     loan: Mapped["Loan"] = relationship(back_populates="payments")
 
     client: Mapped["Client"] = relationship(back_populates="payments")
@@ -91,18 +150,8 @@ class Payment(Base):
         return f"<Payment(amount={self.amount}, created_at={self.created_at})>"
 
 
-current_path = Path(__file__).resolve().parent.parent
-
-DB_URI = f"sqlite:///{current_path / 'database.db'}"
-
-engine = create_engine(DB_URI, echo=True)
-
-
 # print(f"The current path is: \n{current_path.parent.parent}")
 
 
 def create_database():
     Base.metadata.create_all(bind=engine)
-
-
-Session = sessionmaker(bind=engine)

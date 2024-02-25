@@ -1,5 +1,6 @@
 import ttkbootstrap as tkb
 from ttkbootstrap import constants
+from database.models import User
 
 style = tkb.Style.get_instance()
 style.configure("topbar_content_bg_color.TFrame", background="#CCC")
@@ -91,17 +92,21 @@ class UserPanel(tkb.Frame):
         self.table.column("first", width=100, anchor=constants.CENTER)
         self.table.column("last", width=100, anchor=constants.CENTER)
 
-        for index in range(10):
+        users = User.all()
+
+        print(users)
+
+        for user in users:
             self.table.insert(
                 parent="",
                 index=constants.END,
-                iid=index,
+                iid=user.id,
                 values=(
-                    index,
-                    f"username{index}",
-                    f"email{index}",
-                    f"first{index}",
-                    f"last{index}",
+                    user.id,
+                    user.username,
+                    user.email,
+                    user.first_name,
+                    user.last_name,
                 ),
             )
 

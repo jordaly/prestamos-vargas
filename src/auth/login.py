@@ -113,7 +113,7 @@ class Login(tkb.LabelFrame):
             )
 
         else:
-            user = self.session.query(User).filter(User.username == username).first()
+            user = User.filter(username=username)
 
             if user:
                 user_data = {
