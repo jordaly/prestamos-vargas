@@ -65,7 +65,7 @@ class Menu(tkb.Frame):
         self.add_user_button = tkb.Button(
             self.sidevar,
             text="Add User",
-            command=self.load_user_panel,
+            command=lambda: self.load_user_panel(),
             bootstyle=constants.DARK,
         )
 
@@ -100,6 +100,8 @@ class Menu(tkb.Frame):
     # Navigation methods
     def load_user_panel(self):
         self.clean_content()
+
+        self.content_views["user"].go_to_user_panel()
 
         self.content_views["user"].pack(expand=True, fill="both")
 

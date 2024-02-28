@@ -7,6 +7,31 @@ from enum import Enum
 from settings import DATA_PATH
 
 
+class tkinter_events(Enum):
+    BUTTON = "<Button>"  # One mouse button is pressed
+    buttonRelease = "<ButtonRelease>"  # One mouse button is released
+    CONFIGURE = "<Configure>"  # The size or location of the widget changes
+    ACTIVATE = (
+        "<Activate>"  # The state option of a widget changes from inactive to active.
+    )
+    DEACTIVATE = (
+        "<Deactivate>"  # The state option of a widget changes from active to inactive
+    )
+    DESTROY = "<Destroy>"  # The widget is destroyed
+    ENTER = "<Enter>"  # The mouse pointer is moved into a visible part of a widget.
+    LEAVE = "<Leave>"  # The mouse pointer is moved out of a visible part of a widget.
+    EXPOSE = "<Expose>"  # Some part of the widget or application is visible after having been covered up by another window.
+    FOCUSIN = "<FocusIn>"  # The input focus was moved into a widget.
+    FOCUSOUT = "<FocusOut>"  # The input focus was moved from a widget.
+    KEYPRESS = "<KeyPress>"  # A key is pressed
+    KEYRELEASE = "<KeyRelease>"  # A key is released
+    MAP = "<Map>"  # A widget is being placed on a container e.g., calling the pack() or grid() method.
+    UNMAP = "<Unmap>"  # A widget is being unmapped and is no longer visible, for example when calling the grid_remove() method on the widget.
+    MOTION = "<Motion>"  # The mouse pointer is moved entirely within a widget.
+    MOUSEWHEEL = "<MouseWheel>"  # The mouse wheel is rotated
+    VISIBILITY = "<Visibility>"  # At least some part of the application window becomes visible on the screen.
+
+
 class event_types(Enum):
     LOGIN = 1
     LOGIN_FAILED = 2

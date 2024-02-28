@@ -95,6 +95,11 @@ class Base(DeclarativeBase):
             result = session.scalars(select(cls).filter_by(**kwargs).limit(1))
             return result
 
+    @classmethod
+    def custom_query(cls, query):
+        with cls.session() as session:
+            return session.scalars(query).all()
+
 
 class User(Base):
     __tablename__ = "users"
