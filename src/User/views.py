@@ -3,7 +3,13 @@ from ttkbootstrap import constants
 from database.models import User
 
 style = tkb.Style.get_instance()
+style.configure(
+    "contentTable.DARK.Treeview",
+    rowheight=30,
+)
+
 style.configure("topbar_content_bg_color.TFrame", background="#CCC")
+style.configure("topbarContentLabel.TLabel", background="#CCC", foreground="black")
 
 
 class UserView(tkb.Frame):
@@ -19,7 +25,7 @@ class UserView(tkb.Frame):
 
     def go_to_user_form(self):
         self.clear_frame()
-
+        self.form.clean()
         self.form.pack(expand=True, fill=constants.BOTH)
 
     def go_to_user_panel(self):
@@ -38,8 +44,7 @@ class UserPanel(tkb.Frame):
         self.load_content()
 
     def new_user(self):
-        self.parent.clear_frame()
-        self.parent.form.pack(expand=True, fill=constants.BOTH)
+        self.parent.go_to_user_form()
 
     def configure_grid(self):
         self.columnconfigure(index=0, weight=1)
@@ -48,9 +53,6 @@ class UserPanel(tkb.Frame):
 
     def load_topbar(self):
         style = tkb.Style.get_instance()
-        style.configure(
-            "topbarContentLabel.TLabel", background="#CCC", foreground="black"
-        )
 
         self.search_bar_var = tkb.StringVar()
 
@@ -102,6 +104,7 @@ class UserPanel(tkb.Frame):
             self.content,
             columns=("id", "username", "email", "first", "last"),
             show="headings",
+            style="contentTable.DARK.Treeview",
             bootstyle=constants.DARK,
         )
 
@@ -192,50 +195,58 @@ class UserForm(tkb.Frame):
         style.configure("form.TFrame")
 
         self.content = tkb.Frame(self)
-        self.content.grid(column=0, row=1, sticky="nsew")
+        self.content.grid(column=0, row=1, sticky="wn", padx=20)
 
         self.username_frame = tkb.Frame(self.content, style="form.TFrame")
         self.username_lb = tkb.Label(self.username_frame, text="Username")
         self.username_var = tkb.StringVar()
         self.username_entry = tkb.Entry(
-            self.username_frame, textvariable=self.username_var
+            self.username_frame,
+            textvariable=self.username_var,
         )
         self.username_lb.pack()
-        self.username_entry.pack()
+        self.username_entry.pack(ipadx=15, ipady=5)
 
         self.password_frame = tkb.Frame(self.content, style="form.TFrame")
         self.password_lb = tkb.Label(self.password_frame, text="Password")
         self.password_var = tkb.StringVar()
         self.password_entry = tkb.Entry(
-            self.password_frame, textvariable=self.password_var
+            self.password_frame,
+            textvariable=self.password_var,
+            show="*",
         )
         self.password_lb.pack()
-        self.password_entry.pack()
+        self.password_entry.pack(ipadx=15, ipady=5)
 
         self.email_frame = tkb.Frame(self.content, style="form.TFrame")
         self.email_lb = tkb.Label(self.email_frame, text="Email")
         self.email_var = tkb.StringVar()
-        self.email_entry = tkb.Entry(self.email_frame, textvariable=self.email_var)
+        self.email_entry = tkb.Entry(
+            self.email_frame,
+            textvariable=self.email_var,
+        )
         self.email_lb.pack()
-        self.email_entry.pack()
+        self.email_entry.pack(ipadx=15, ipady=5)
 
         self.first_name_frame = tkb.Frame(self.content, style="form.TFrame")
         self.first_name_lb = tkb.Label(self.first_name_frame, text="First Name")
         self.first_name_var = tkb.StringVar()
         self.first_name_entry = tkb.Entry(
-            self.first_name_frame, textvariable=self.first_name_var
+            self.first_name_frame,
+            textvariable=self.first_name_var,
         )
         self.first_name_lb.pack()
-        self.first_name_entry.pack()
+        self.first_name_entry.pack(ipadx=15, ipady=5)
 
         self.last_name_frame = tkb.Frame(self.content, style="form.TFrame")
         self.last_name_lb = tkb.Label(self.last_name_frame, text="Last Name")
         self.last_name_var = tkb.StringVar()
         self.last_name_entry = tkb.Entry(
-            self.last_name_frame, textvariable=self.last_name_var
+            self.last_name_frame,
+            textvariable=self.last_name_var,
         )
         self.last_name_lb.pack()
-        self.last_name_entry.pack()
+        self.last_name_entry.pack(ipadx=15, ipady=5)
 
         self.username_frame.pack(pady=10)
         self.password_frame.pack(pady=10)
@@ -246,9 +257,26 @@ class UserForm(tkb.Frame):
     def save_user(self):
         username = self.username_var.get()
         password = self.password_var.get()
-        email = self.email_var.get()
+        email = self.email_var.get() if self.email_var.get() else None
         first_name = self.first_name_var.get()
         last_name = self.last_name_var.get()
+
+        print(
+            f"""
+            username: {username}
+            password: {password}
+            email: {email}
+            first_name: {first_name}
+            last_name: {last_name}
+            """
+        )
+
+        if not username or not password:
+            tkb.dialogs.dialogs.Messagebox.ok(
+                message="The username and the password can not be empty",
+                title="error",
+            )
+            return
 
         user = User(
             username=username,
@@ -259,3 +287,12 @@ class UserForm(tkb.Frame):
         )
 
         user.save()
+
+        self.parent.go_to_user_panel()
+
+    def clean(self):
+        self.username_var.set("")
+        self.password_var.set("")
+        self.email_var.set("")
+        self.first_name_var.set("")
+        self.last_name_var.set("")

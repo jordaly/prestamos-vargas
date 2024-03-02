@@ -105,9 +105,11 @@ class User(Base):
     __tablename__ = "users"
     username: Mapped[str] = mapped_column(VARCHAR(60), nullable=False, unique=True)
     password: Mapped[str] = mapped_column(VARCHAR(60), nullable=False)
-    email: Mapped[Optional[str]] = mapped_column(VARCHAR(60), unique=True)
-    first_name: Mapped[Optional[str]] = mapped_column(VARCHAR(60))
-    last_name: Mapped[Optional[str]] = mapped_column(VARCHAR(60))
+    email: Mapped[Optional[str]] = mapped_column(
+        VARCHAR(60), unique=True, nullable=True
+    )
+    first_name: Mapped[Optional[str]] = mapped_column(VARCHAR(60), nullable=True)
+    last_name: Mapped[Optional[str]] = mapped_column(VARCHAR(60), nullable=True)
     image: Mapped[Optional[str]] = mapped_column(VARCHAR(60))
 
     def __repr__(self):
