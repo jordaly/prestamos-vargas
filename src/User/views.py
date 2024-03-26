@@ -1,4 +1,5 @@
 import ttkbootstrap as tkb
+from ttkbootstrap.tableview import Treeview
 from ttkbootstrap import constants
 from database.models import User
 
@@ -9,7 +10,8 @@ style.configure(
 )
 
 style.configure("topbar_content_bg_color.TFrame", background="#CCC")
-style.configure("topbarContentLabel.TLabel", background="#CCC", foreground="black")
+style.configure("topbarContentLabel.TLabel",
+                background="#CCC", foreground="black")
 
 
 class UserView(tkb.Frame):
@@ -56,7 +58,8 @@ class UserPanel(tkb.Frame):
 
         self.search_bar_var = tkb.StringVar()
 
-        self.topbar_frame = tkb.Frame(self, style="topbar_content_bg_color.TFrame")
+        self.topbar_frame = tkb.Frame(
+            self, style="topbar_content_bg_color.TFrame")
         self.topbar_frame.grid(column=0, row=0, sticky="nsew")
 
         self.title_lb = tkb.Label(
@@ -78,21 +81,25 @@ class UserPanel(tkb.Frame):
             self.topbar_frame,
             text="Search",
             bootstyle=constants.DARK,
-            command=lambda: self.load_tree_data(username=self.search_bar_var.get()),
+            command=lambda: self.load_tree_data(
+                username=self.search_bar_var.get()),
         )
 
         self.search_bth.pack(side=constants.RIGHT, padx=10)
 
-        self.search_bar = tkb.Entry(self.topbar_frame, textvariable=self.search_bar_var)
+        self.search_bar = tkb.Entry(
+            self.topbar_frame, textvariable=self.search_bar_var)
 
         self.search_bar.bind(
             sequence="<Return>",
-            func=lambda _: self.load_tree_data(username=self.search_bar_var.get()),
+            func=lambda _: self.load_tree_data(
+                username=self.search_bar_var.get()),
         )
 
         self.search_bar.bind(
             sequence="<KeyRelease>",
-            func=lambda _: self.load_tree_data(username=self.search_bar_var.get()),
+            func=lambda _: self.load_tree_data(
+                username=self.search_bar_var.get()),
         )
 
         self.search_bar.pack(side=constants.RIGHT, padx=10)
@@ -100,7 +107,7 @@ class UserPanel(tkb.Frame):
     def load_content(self):
         self.content = tkb.Frame(self)
         self.content.grid(column=0, row=1, sticky="nsew")
-        self.table = tkb.Treeview(
+        self.table: tkb.Treeview = Treeview(
             self.content,
             columns=("id", "username", "email", "first", "last"),
             show="headings",
@@ -131,6 +138,7 @@ class UserPanel(tkb.Frame):
 
         users = User.filter(username=username) if username else User.all()
 
+        self.table.insert
         for user in users:
             self.table.insert(
                 parent="",
@@ -164,7 +172,8 @@ class UserForm(tkb.Frame):
         self.rowconfigure(index=1, weight=1)
 
     def load_topbar(self):
-        self.topbar_frame = tkb.Frame(self, style="topbar_content_bg_color.TFrame")
+        self.topbar_frame = tkb.Frame(
+            self, style="topbar_content_bg_color.TFrame")
         self.topbar_frame.grid(column=0, row=0, sticky="nsew")
 
         self.title_lb = tkb.Label(
@@ -229,7 +238,8 @@ class UserForm(tkb.Frame):
         self.email_entry.pack(ipadx=15, ipady=5)
 
         self.first_name_frame = tkb.Frame(self.content, style="form.TFrame")
-        self.first_name_lb = tkb.Label(self.first_name_frame, text="First Name")
+        self.first_name_lb = tkb.Label(
+            self.first_name_frame, text="First Name")
         self.first_name_var = tkb.StringVar()
         self.first_name_entry = tkb.Entry(
             self.first_name_frame,
